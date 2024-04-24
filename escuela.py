@@ -328,5 +328,6 @@ while True:
         pagina=seleccionar(selecciondeMenu,pagina,opciones,persistenteVariable)
         opciones=menuActual(pagina,persistenteVariable)
 
-    if pagina == 0:
+    if pagina == 0 and persistenteVariable != None:
         listaDeAlumnos=ordenarDiccionario(listaDeAlumnos)
+        persistenteVariable=None
