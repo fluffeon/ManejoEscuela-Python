@@ -16,7 +16,7 @@ listaDeAlumnos={
         "amonestaciones": 0},
 
     2: {
-        'apellido': 'TU MAMÁ', 
+        'apellido': 'CARRAZCO', 
         'nombre': 'JUAN PEREZ', 
         "dni": "123456789",
         "fdn": "26/02/2006",
@@ -29,7 +29,7 @@ listaDeAlumnos={
 
 	3: {
         'apellido': 'ABENDAÑO',
-        'nombre': 'ROSARIO', 
+        'nombre': 'ROSA', 
         "dni": "123456789",
         "fdn": "26/02/2006",
         "grado": "5°",
@@ -40,8 +40,8 @@ listaDeAlumnos={
         "amonestaciones": 0},
 
     4: {
-        'apellido': 'AAAA', 
-        'nombre': 'BBBBB', 
+        'apellido': 'FERNÁNDEZ', 
+        'nombre': 'BRANDON QUISPE', 
         "dni": "123456789",
         "fdn": "26/02/2006",
         "grado": "5°",
