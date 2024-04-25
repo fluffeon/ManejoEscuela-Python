@@ -2,7 +2,6 @@
 
 persistenteVariable=None
 
-global listaDeAlumnos
 listaDeAlumnos={
     1: {
         'apellido': 'ABREGU', 
@@ -77,6 +76,7 @@ listaDeAlumnos={
         "amonestaciones": 0}
         }
 
+
 def ordenarDiccionario(dicc):
     listaOrden=[]
     for i in range(len(dicc)):
@@ -109,21 +109,26 @@ def ordenarDiccionario(dicc):
     
 
 def seleccionar(opcion,menu,cantidadDeOpciones,persistente):
-    # Menu Principal 
+
     if type(menu) is list or type(menu) is tuple and len(menu) == 2:
         modo=menu[1]
         menu=menu[0]
 
+    # Menu Principal (ID: 0)
     if opcion in cantidadDeOpciones and menu == 0:
         match opcion:
-            case "b": # Mostrar los datos de cada alumno
+            case "a": # Mostrar los datos de cada alumno
                 return 1
-            case "c": # Modificar los datos de cada alumno
+            case "b": # Modificar los datos de los alumnos
                 return 3
-            case "g": # Salir y guardar
+            case "c": # Agregar alumno
+                return 6
+            case "d": # Expulsar alumno
+                return 7
+            case "e": # Salir y guardar
                 return exit()
     
-    # Lista de Alumnos
+    # Lista de Alumnos (ID: 1)
     elif opcion in cantidadDeOpciones and menu == 1:
         match opcion:
             case "a":
@@ -132,17 +137,19 @@ def seleccionar(opcion,menu,cantidadDeOpciones,persistente):
                 return [2, int(opcion)]
 
 
-    # Visualizador de Información de Alumno
+    # Visualizador de Información de Alumno (ID: 2)
     elif opcion in cantidadDeOpciones and menu == 2:
         return 1
 
+    # Visualizador de Información de Alumno (para modificar) (ID: 3)
     elif opcion in cantidadDeOpciones and menu == 3:
         match opcion:
             case "a":
                 return 0
             case default:
                 return [4, int(opcion), int(opcion)]
-    
+
+    # Seleccionador para Modificar atributos de Alumno (ID: 4) 
     elif opcion in cantidadDeOpciones and menu == 4:
         match opcion:
             case "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j":
@@ -150,10 +157,18 @@ def seleccionar(opcion,menu,cantidadDeOpciones,persistente):
             case "k":
                 return 3
 
-    elif opcion in cantidadDeOpciones and menu == 5:
+    # Modificador de Atributos de Alumno / Herramienta para Agregar Alumnos (ID: 5, ID: 6)
+    elif opcion in cantidadDeOpciones and menu == 5 or menu == 6 or menu == 8:
         return 0
+    
+    elif opcion in cantidadDeOpciones and menu == 7:
+        match opcion:
+            case "a":
+                return 0
+            case default:
+                return [8, int(opcion), int(opcion)]
 
-    # Nada 
+    # Pagina no existente (ID: None)
     elif opcion in cantidadDeOpciones and menu == None:
         return 0
 
@@ -167,30 +182,31 @@ def menuActual(menu, persistente=None):
         case 0:
             print("¿Qué desea hacer ahora?")
 
-            print("a. Abrir otra lista")
-            print("b. Mostrar los datos de cada alumno")
-            print("c. Modificar los datos de los alumnos")
-            print("d. Agregar alumno")
-            print("e. Expulsar alumno")
-            print("f. Configuración")
-            print("g. Salir y guardar")
-            return ('a', 'b', 'c', 'd', 'e', 'f', 'g')
+            print("a. Mostrar los datos de cada alumno")
+            print("b. Modificar los datos de los alumnos")
+            print("c. Agregar alumno")
+            print("d. Expulsar alumno")
+            print("e. Salir y guardar")
+            return ('a', 'b', 'c', 'd', 'e')
     
         # Interfaz de la Lista de Alumnos
         case 1:
             print("- Lista de Alumnos -")
-            print("¿Cual alumno desea ver?")
             opcionesAlumnos=[]
-            for i in range(len(listaDeAlumnos)):
-                print (f"{i+1}. {listaDeAlumnos[i+1]['apellido']}, {listaDeAlumnos[i+1]['nombre']}")
-                opcionesAlumnos.append(str(i+1))
+            if len(listaDeAlumnos) != 0:
+                print("¿Cual alumno desea ver?")
+                for i in range(len(listaDeAlumnos)):
+                    print (f"{i+1}. {listaDeAlumnos[i+1]['apellido']}, {listaDeAlumnos[i+1]['nombre']}")
+                    opcionesAlumnos.append(str(i+1))
+            else:
+                print("No hay alumnos inscriptos en esta lista.")
         
             opcionesAlumnos.append("a")
             
             print("a. Volver")
             return opcionesAlumnos
 
-        # Visualizador de Alumno
+        # Interfaz del Visualizador de Alumno
         case 2:
             print(f"Alumno {modo} - {listaDeAlumnos[modo]['apellido']}, {listaDeAlumnos[modo]['nombre']}")
             print()
@@ -202,11 +218,7 @@ def menuActual(menu, persistente=None):
             print()
             print("Información del Alumno")
             print(f"Notas: {listaDeAlumnos[modo]['notas']}")
-            promedio=0
-            for nota in listaDeAlumnos[modo]['notas']:
-                promedio+=nota
-        
-            print(f"Promedio: {promedio/len(listaDeAlumnos[modo]['notas'])}")
+
             print(f"Tutor: {listaDeAlumnos[modo]['tutor']}")
             print(f"Faltas: {listaDeAlumnos[modo]['faltas']}")
             print(f"Amonestaciones: {listaDeAlumnos[modo]['amonestaciones']}")
@@ -214,19 +226,24 @@ def menuActual(menu, persistente=None):
         
             print("a. Volver")
             return ("a")
-    
+
+        # Seleccionar cual alumno modificar atributos
         case 3:
-            print("¿Cual alumno desea modificar?")
             opcionesAlumnos=[]
-            for i in range(len(listaDeAlumnos)):
-                print (f"{i+1}. {listaDeAlumnos[i+1]['apellido']}, {listaDeAlumnos[i+1]['nombre']}")
-                opcionesAlumnos.append(str(i+1))
+            if len(listaDeAlumnos) != 0:
+                print("¿Cual alumno desea modificar?")
+                for i in range(len(listaDeAlumnos)):
+                    print (f"{i+1}. {listaDeAlumnos[i+1]['apellido']}, {listaDeAlumnos[i+1]['nombre']}")
+                    opcionesAlumnos.append(str(i+1))
+            else:
+                print("No hay alumnos inscriptos en esta lista.")
         
             opcionesAlumnos.append("a")
             
             print("a. Volver")
             return opcionesAlumnos
         
+        # Selector de Atributos a Modificar del Alumno
         case 4:
             print(f"¿Que atributo de {listaDeAlumnos[modo]['apellido']}, {listaDeAlumnos[modo]['nombre']} quiere cambiar?")
 
@@ -244,6 +261,7 @@ def menuActual(menu, persistente=None):
             print("k. Volver")
             return ("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k")
         
+        # Herramienta para Modificar atributos del alumno
         case 5:
             valorPersistente=persistente
             opcionesModif={
@@ -259,21 +277,129 @@ def menuActual(menu, persistente=None):
                 'j': 'amonestaciones'}
 
             modificar=opcionesModif[modo]
-            
-            nuevo=input("Nuevo: ")
-            nuevo=nuevo.upper()
-            print(nuevo)
-    
-            listaDeAlumnos[valorPersistente][modificar]=nuevo
 
-            print("Atributo exitosamente cambiado.")
+            vacio=None
+            
+            nuevo=input(f"Nuevo atributo '{modificar}': ")
+            nuevo=nuevo.upper()
+            nuevo=nuevo.lstrip()
+            nuevo=nuevo.rstrip()
+
+            if modificar == 'notas':
+                    nuevo=list(nuevo)
+
+            for caracter in nuevo:
+                if caracter != " ":
+                    listaDeAlumnos[valorPersistente][modificar]=nuevo
+                    vacio=False
+                    break
+        
+            if vacio == False:
+                print("Atributo exitosamente cambiado.")
+            else:
+                print("Operación cancelada.")
+
             print("a. Volver")
             return ("a")
+    
+        # Agregar alumno
+        case 6:
+            Vacio=None
+            print ("- Agregar alumno -")
+            opcionesModif={
+                0: 'apellido', 
+                1: 'nombre', 
+                2: 'dni', 
+                3: 'fdn', 
+                4: 'grado', 
+                5: 'burbuja', 
+                6: 'notas',
+                7: 'tutor',
+                8: 'faltas',
+                9: 'amonestaciones'}
             
+            listaParaPoner=[]
             
+            for i in range(len(opcionesModif)):
+                Valor=input(f"Inserte atributo '{opcionesModif[i]}': ")
+
+                Valor=Valor.lstrip()
+                Valor=Valor.rstrip()
+                Valor=Valor.upper()
+
+                if len(Valor) == 0:
+                    Vacio=True
+                    break
+                else:
+                    if opcionesModif[i] == 'notas':
+                        Valor=list(Valor)
+                    listaParaPoner.append(Valor)
+            
+            if Vacio == True:
+                print("Operación cancelada.")
+            else:
+                listaDeAlumnos[len(listaDeAlumnos)+1]={
+                    f"{opcionesModif[0]}": f"{listaParaPoner[0]}",
+                    f"{opcionesModif[1]}": f"{listaParaPoner[1]}",
+                    f"{opcionesModif[2]}": f"{listaParaPoner[2]}",
+                    f"{opcionesModif[3]}": f"{listaParaPoner[3]}",
+                    f"{opcionesModif[4]}": f"{listaParaPoner[4]}",
+                    f"{opcionesModif[5]}": f"{listaParaPoner[5]}",
+                    f"{opcionesModif[6]}": f"{listaParaPoner[6]}",
+                    f"{opcionesModif[7]}": f"{listaParaPoner[7]}",
+                    f"{opcionesModif[8]}": f"{listaParaPoner[8]}",
+                    f"{opcionesModif[9]}": f"{listaParaPoner[9]}"
+                    }
+                
+                print("Se ha agregado al alumno con exito.")
+            print("a. Volver")
+            return ("a")
+
+        # Seleccionar cual alumno expulsar
+        case 7:
+            opcionesAlumnos=[]
+            if len(listaDeAlumnos) != 0:
+                print("¿A cual alumno quiere expulsar?")
+                for i in range(len(listaDeAlumnos)):
+                    print (f"{i+1}. {listaDeAlumnos[i+1]['apellido']}, {listaDeAlumnos[i+1]['nombre']}")
+                    opcionesAlumnos.append(str(i+1))
+            else:
+                print("No hay alumnos inscriptos en esta lista.")
+            
+            opcionesAlumnos.append("a")
+            
+            print("a. Volver")
+            return opcionesAlumnos
+
+        # Expulsador de Alumnos 3000
+        case 8:
+            valorPersistente=modo
+            Respaldo=listaDeAlumnos
+
+            Confirmación=input(f"¿Está seguro que quiere expulsar al alumno/a {listaDeAlumnos[modo]['apellido']}, {listaDeAlumnos[modo]['nombre']}? (s/N) ")
+            Confirmación=Confirmación.lstrip()
+            Confirmación=Confirmación.rstrip()
+            
+            if Confirmación == "s":
+                Confirmación="S"
+
+            if Confirmación == "S" and len(Confirmación) == 1:
+
+                for i in range(modo,len(listaDeAlumnos)):
+                    listaDeAlumnos[i]=listaDeAlumnos[i+1]
+            
+                del listaDeAlumnos[len(listaDeAlumnos)]
+
+                print("Se ha expulsado al alumno con exito.")
+
+            else:
+                print("Operación cancelada.")
+
+            print("a. Volver")
+            return ("a")
 
 
-        # The Dark Realm (solo para depurar, se llama si la pagina en concreto no existe)
+        # Pagina no existente
         case default:
             print("Esta funcion por ahora no está implementada o intentaste ir a una pagina no existente.")
             print("Si ves este mensaje en software de produccion, por favor mandalo como un bug a nuestro GitHub")
@@ -284,7 +410,7 @@ def menuActual(menu, persistente=None):
 
 def cmds(comando):
     match comando:
-        case "currentPage":
+        case "paginaActual":
             print(f"Pagina actual: {pagina}")
 
         case "exit" | "salir":
@@ -305,29 +431,31 @@ print("Bienvenido a la Lista Escolar!")
 pagina=0
 opciones=menuActual(pagina)
 argumentoAdic=None
-while True:
+try:
+    while True:
 
-    if type(pagina) is list and len(pagina) == 3:
-        persistenteVariable=pagina[2]
+        if type(pagina) is list and len(pagina) == 3:
+            persistenteVariable=pagina[2]
 
-    if type(pagina) is list:
-        pagina=pagina[0]
+        if type(pagina) is list:
+            pagina=pagina[0]
 
-    selecciondeMenu=input("> ")
+        selecciondeMenu=input("> ")
 
-    if len(selecciondeMenu) <= 0:
-        pass
+        if len(selecciondeMenu) <= 0:
+            pass
 
-    elif len(selecciondeMenu) >= 2:
-        cmds(selecciondeMenu)
+        elif len(selecciondeMenu) >= 2:
+            cmds(selecciondeMenu)
 
-    elif selecciondeMenu not in opciones:
-        print("Opcion invalida.")
+        elif selecciondeMenu not in opciones:
+            print("Opcion invalida.")
     
-    else:
-        pagina=seleccionar(selecciondeMenu,pagina,opciones,persistenteVariable)
-        opciones=menuActual(pagina,persistenteVariable)
+        else:
+            pagina=seleccionar(selecciondeMenu,pagina,opciones,persistenteVariable)
+            opciones=menuActual(pagina,persistenteVariable)
 
-    if pagina == 0 and persistenteVariable != None:
-        listaDeAlumnos=ordenarDiccionario(listaDeAlumnos)
-        persistenteVariable=None
+        if pagina == 0:
+            listaDeAlumnos=ordenarDiccionario(listaDeAlumnos)
+except KeyboardInterrupt:
+    cmds("exit")
