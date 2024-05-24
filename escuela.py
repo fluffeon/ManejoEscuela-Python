@@ -2,6 +2,7 @@
 
 persistenteVariable=None
 
+"""
 listaDeAlumnos={
     1: {
         'apellido': 'ABREGU', 
@@ -75,38 +76,188 @@ listaDeAlumnos={
         "faltas": 0,
         "amonestaciones": 0}
         }
+"""
+
+class Alumno:
+
+    def __init__(self,apellido,nombre,dni="",fdn="",grado="",division="",notas=[],tutor="",faltas=int(),amonestaciones=int()):
+        self.apellido = apellido.upper().lstrip().rstrip()
+        self.nombre = nombre.upper().lstrip().rstrip()
+        self.dni = dni.lstrip().rstrip()
+        self.fdn = fdn.lstrip().rstrip()
+        self.grado = grado.lstrip().rstrip()
+        self.division = division.lstrip().rstrip()
+        self.notas = list(notas)
+        for nota in self.notas:
+            if nota not in range(1,11):
+                raise ValueError('No se pueden poner valores mayores de 10 ni menores de 1 en una lista de notas.')
+        self.tutor = tutor.lstrip().rstrip()
+        self.faltas = int(faltas)
+        self.amonestaciones = int(amonestaciones)
+
+    def dato(self,datoASacar):
+        match datoASacar:
+            case "apellido":
+                return self.apellido
+            case "nombre":
+                return self.nombre
+            case "dni":
+                return self.dni
+            case "fdn":
+                return self.fdn
+            case "grado":
+                return self.grado
+            case "division":
+                return self.division
+            case "notas":
+                return self.notas
+            case "tutor":
+                return self.tutor
+            case "faltas":
+                return self.faltas
+            case "amonestaciones":
+                return self.amonestaciones
+
+    def reemplazar(self,datoAReemplazar,nuevo):
+        match datoAReemplazar:
+            case "apellido":
+                self.apellido = nuevo.upper().lstrip().rstrip()
+            case "nombre":
+                self.nombre = nuevo.upper().lstrip().rstrip()
+            case "dni":
+                self.dni = nuevo.lstrip().rstrip()
+            case "fdn":
+                self.fdn = nuevo.lstrip().rstrip()
+            case "grado":
+                self.grado = nuevo.lstrip().rstrip()
+            case "division":
+                self.division = nuevo.lstrip().rstrip()
+            case "notas":
+                self.notas = list(nuevo)
+                for nota in self.notas:
+                    if nota not in range(1,11):
+                        raise ValueError('No se pueden poner valores mayores de 10 ni menores de 1 en una lista de notas.')
+            case "tutor":
+                self.tutor = nuevo.lstrip().rstrip()
+            case "faltas":
+                self.faltas = int(nuevo)
+            case "amonestaciones":
+                self.amonestaciones = int(nuevo)
+    
+    def agregar(self,datoAAgregar,nuevo):
+        match datoAAgregar:
+            case "notas":
+                if nuevo not in range(1,11):
+                    raise ValueError('No se pueden poner valores mayores de 10 ni menores de 0 en una lista de notas.')
+                else:
+                    self.notas.append(nuevo)
+            case "faltas":
+                self.faltas += int(nuevo)
+            case "amonestaciones":
+                self.amonestaciones += int(nuevo)
+            
+    
+listaDeAlumnos=[
+    
+    Alumno(
+    apellido="abendaño",
+    nombre="joaquin", 
+    fdn="26/02/2006", 
+    grado="5º", 
+    division="A", 
+    notas=[10, 2, 4, 10],
+    tutor="Mi mamá",
+    faltas=0,
+    amonestaciones=0), 
+    
+    Alumno(
+    apellido="caca",
+    nombre="juan perez", 
+    fdn="26/02/2006", 
+    grado="5º", 
+    division="A", 
+    notas=[10, 2, 4, 10],
+    tutor="Mi mamá",
+    faltas=0,
+    amonestaciones=0), 
+
+    Alumno(
+    apellido="balá",
+    nombre="carlos", 
+    fdn="26/02/2006", 
+    grado="5º", 
+    division="A", 
+    notas=[10, 2, 4, 10],
+    tutor="Mi mamá",
+    faltas=0,
+    amonestaciones=0),
+
+    Alumno(
+    apellido="Abregú",
+    nombre="Juan Carlos", 
+    fdn="26/02/2006", 
+    grado="5º", 
+    division="A", 
+    notas=[10, 2, 4, 10],
+    tutor="Mi mamá",
+    faltas=0,
+    amonestaciones=0)
+
+    ]
+
+print(listaDeAlumnos[0].dato("apellido"))
+print(listaDeAlumnos[0].dato("notas"))
+listaDeAlumnos[0].agregar("notas",5)
+listaDeAlumnos[0].agregar("notas",10)
+
+print(listaDeAlumnos[0].dato("notas"))
+print(listaDeAlumnos[0].dato("apellido"))
 
 
-def ordenarDiccionario(dicc):
+for i in range(len(listaDeAlumnos)):
+	print(f"{listaDeAlumnos[i].dato('apellido')}, {listaDeAlumnos[i].dato('nombre')}")
+
+print(listaDeAlumnos)
+
+def ordenarLista(lista):
     listaOrden=[]
-    for i in range(len(dicc)):
-	    listaOrden.append(f"{dicc[i+1]['apellido']}, {dicc[i+1]['nombre']}")
+    for i in range(len(lista)):
+	    listaOrden.append(f"{lista[i].dato('apellido')}, {lista[i].dato('nombre')}")
 
+    listaRespaldo = []
     listaOrden.sort()
+
+    print(listaOrden)
+    print(listaRespaldo)
 
     Contador=0
     Contador2=0
-    diccSegundo={}
-    Comparar=""
 
-    while Contador < len(dicc):
-	
-        Comparar2=listaOrden[Contador]
-	
-        Contador2+=1
-        Comparar=f"{dicc[Contador2]["apellido"]}, {dicc[Contador2]['nombre']}"
-        
-        if Comparar == Comparar2:
-            diccSegundo[Contador+1]=dicc[Contador2]
-            Contador2=0
-            Contador+=1
-        elif Contador2 == len(dicc):
-            Contador2=0
-            Contador+=1
-    
+    while True:
+        if Contador == len(listaOrden):
+            break
 
-    return diccSegundo
+        IteraciónActual=f"{lista[Contador].dato('apellido')}, {lista[Contador].dato('nombre')}"
+        IteraciónActual2=lista[Contador]
+        print(IteraciónActual)
+
+        if IteraciónActual == listaOrden[i]:
+            listaRespaldo.append(IteraciónActual2)
+            Contador+=1
+            Contador2=0
+
+        if Contador2 == len(lista):
+            Contador+=1
+            Contador2=0
+        else:
+            Contador2+=1
+
+    return listaRespaldo
+
     
+print(ordenarLista(listaDeAlumnos))
+
+exit()
 
 def seleccionar(opcion,menu,cantidadDeOpciones,persistente):
 
