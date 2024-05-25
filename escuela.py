@@ -454,7 +454,7 @@ def menuActual(menu, persistente=None):
 
                 Valor=Valor.lstrip().rstrip().upper()
 
-                if len(Valor) == 0 and opcionesModif[i] != "division" and opcionesModif[i] != "grado" and opcionesModif[i] != "dni" and opcionesModif[i] != "fdn" and opcionesModif[i] != "tutor":
+                if len(Valor) == 0 and opcionesModif[i] != "division" and opcionesModif[i] != "grado" and opcionesModif[i] != "dni" and opcionesModif[i] != "fdn" and opcionesModif[i] != "tutor" and opcionesModif[i] != "domicilio":
                     Vacio=True
                     break
                 else:
