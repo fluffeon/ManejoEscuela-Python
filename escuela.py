@@ -1,99 +1,30 @@
 #!/bin/python
 
 persistenteVariable=None
-
-"""
-listaDeAlumnos={
-    1: {
-        'apellido': 'ABREGU', 
-        'nombre': 'JOSE CARLOS',
-        "dni": "123456789",
-        "fdn": "26/02/2006",
-        "grado": "5°",
-        "burbuja": "A",
-        "notas": [5, 6, 10, 8],
-        "tutor": "Mi mama",
-        "faltas": 0,
-        "amonestaciones": 0},
-
-    2: {
-        'apellido': 'CARRAZCO', 
-        'nombre': 'JUAN PEREZ', 
-        "dni": "123456789",
-        "fdn": "26/02/2006",
-        "grado": "5°",
-        "burbuja": "A",
-        "notas": [5, 6, 10, 8],
-        "tutor": "Mi mama",
-        "faltas": 0,
-        "amonestaciones": 0},
-
-	3: {
-        'apellido': 'ABENDAÑO',
-        'nombre': 'ROSA', 
-        "dni": "123456789",
-        "fdn": "26/02/2006",
-        "grado": "5°",
-        "burbuja": "A",
-        "notas": [5, 6, 10, 8],
-        "tutor": "Mi mama",
-        "faltas": 0,
-        "amonestaciones": 0},
-
-    4: {
-        'apellido': 'FERNÁNDEZ', 
-        'nombre': 'BRANDON QUISPE', 
-        "dni": "123456789",
-        "fdn": "26/02/2006",
-        "grado": "5°",
-        "burbuja": "A",
-        "notas": [5, 6, 10, 8],
-        "tutor": "Mi mama",
-        "faltas": 0,
-        "amonestaciones": 0},
-
-    5: {
-        'apellido': 'BERMEJO', 
-        'nombre': 'JOAQUIN', 
-        "dni": "123456789",
-        "fdn": "26/02/2006",
-        "grado": "5°",
-        "burbuja": "A",
-        "notas": [5, 6, 10, 8],
-        "tutor": "Mi mama",
-        "faltas": 0,
-        "amonestaciones": 0},
-
-    6: {
-        'apellido': 'ABENDAÑO', 
-        'nombre': 'JOAQUIN',
-        "dni": "123456789",
-        "fdn": "26/02/2006",
-        "grado": "5°",
-        "burbuja": "A",
-        "notas": [5, 6, 10, 8],
-        "tutor": "Mi mama",
-        "faltas": 0,
-        "amonestaciones": 0}
-        }
-"""
-
 class Alumno:
 
-    def __init__(self,apellido,nombre,dni="",fdn="",grado="",division="",notas=[],tutor="",faltas=int(),amonestaciones=int()):
+    def __init__(self,apellido,nombre,dni="Desconocido",fdn="Desconocido",grado="Desconocido",division="",notas=[],tutor="Desconocido",domicilio="Desconocido",faltas=int(0),amonestaciones=int(0)):
         self.apellido = apellido.upper().lstrip().rstrip()
         self.nombre = nombre.upper().lstrip().rstrip()
         self.dni = dni.lstrip().rstrip()
         self.fdn = fdn.lstrip().rstrip()
         self.grado = grado.lstrip().rstrip()
         self.division = division.lstrip().rstrip()
+        self.domicilio = domicilio.lstrip().rstrip()
         self.notas = list(notas)
         for nota in self.notas:
             if nota not in range(1,11):
                 raise ValueError('No se pueden poner valores mayores de 10 ni menores de 1 en una lista de notas.')
         self.tutor = tutor.lstrip().rstrip()
-        self.faltas = int(faltas)
-        self.amonestaciones = int(amonestaciones)
+        if faltas >= 0:
+            self.faltas = int(faltas)
+        else:
+            self.amonestaciones = 0
+
+        if amonestaciones >= 0:
+            self.amonestaciones = int(amonestaciones)
+        else:
+            self.amonestaciones = 0
 
     def dato(self,datoASacar):
         match datoASacar:
@@ -109,6 +40,8 @@ class Alumno:
                 return self.grado
             case "division":
                 return self.division
+            case "domicilio":
+                return self.domicilio
             case "notas":
                 return self.notas
             case "tutor":
@@ -132,6 +65,8 @@ class Alumno:
                 self.grado = nuevo.lstrip().rstrip()
             case "division":
                 self.division = nuevo.lstrip().rstrip()
+            case "domicilio":
+                self.domicilio = nuevo.lstrip().rstrip()
             case "notas":
                 self.notas = list(nuevo)
                 for nota in self.notas:
@@ -140,9 +75,15 @@ class Alumno:
             case "tutor":
                 self.tutor = nuevo.lstrip().rstrip()
             case "faltas":
-                self.faltas = int(nuevo)
+                if int(nuevo) >= 0:
+                    self.faltas = int(faltas)
+                else:
+                    self.amonestaciones = 0
             case "amonestaciones":
-                self.amonestaciones = int(nuevo)
+                if int(nuevo) >= 0:
+                    self.amonestaciones = int(nuevo)
+                else:
+                    self.amonestaciones = 0
     
     def agregar(self,datoAAgregar,nuevo):
         match datoAAgregar:
@@ -155,6 +96,19 @@ class Alumno:
                 self.faltas += int(nuevo)
             case "amonestaciones":
                 self.amonestaciones += int(nuevo)
+
+    def remover(self,datoARemover,nuevo):
+        match datoARemover:
+            case "notas":
+                del self.notas[nuevo]
+            case "faltas":
+                self.faltas -= int(nuevo)
+                if self.faltas < 0:
+                    self.faltas = 0
+            case "amonestaciones":
+                self.amonestaciones -= int(nuevo)
+                if self.amonestaciones < 0:
+                    self.amonestaciones = 0
             
     
 listaDeAlumnos=[
@@ -205,59 +159,12 @@ listaDeAlumnos=[
 
     ]
 
-print(listaDeAlumnos[0].dato("apellido"))
-print(listaDeAlumnos[0].dato("notas"))
-listaDeAlumnos[0].agregar("notas",5)
-listaDeAlumnos[0].agregar("notas",10)
-
-print(listaDeAlumnos[0].dato("notas"))
-print(listaDeAlumnos[0].dato("apellido"))
-
-
 for i in range(len(listaDeAlumnos)):
 	print(f"{listaDeAlumnos[i].dato('apellido')}, {listaDeAlumnos[i].dato('nombre')}")
 
-print(listaDeAlumnos)
-
 def ordenarLista(lista):
-    listaOrden=[]
-    for i in range(len(lista)):
-	    listaOrden.append(f"{lista[i].dato('apellido')}, {lista[i].dato('nombre')}")
-
-    listaRespaldo = []
-    listaOrden.sort()
-
-    print(listaOrden)
-    print(listaRespaldo)
-
-    Contador=0
-    Contador2=0
-
-    while True:
-        if Contador == len(listaOrden):
-            break
-
-        IteraciónActual=f"{lista[Contador].dato('apellido')}, {lista[Contador].dato('nombre')}"
-        IteraciónActual2=lista[Contador]
-        print(IteraciónActual)
-
-        if IteraciónActual == listaOrden[i]:
-            listaRespaldo.append(IteraciónActual2)
-            Contador+=1
-            Contador2=0
-
-        if Contador2 == len(lista):
-            Contador+=1
-            Contador2=0
-        else:
-            Contador2+=1
-
-    return listaRespaldo
-
-    
-print(ordenarLista(listaDeAlumnos))
-
-exit()
+    listaOrden = sorted(lista, key=lambda x: x.apellido, reverse=False)
+    return listaOrden
 
 def seleccionar(opcion,menu,cantidadDeOpciones,persistente):
 
@@ -303,9 +210,9 @@ def seleccionar(opcion,menu,cantidadDeOpciones,persistente):
     # Seleccionador para Modificar atributos de Alumno (ID: 4) 
     elif opcion in cantidadDeOpciones and menu == 4:
         match opcion:
-            case "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j":
+            case "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k" | "l" | "m" | "n":
                 return [5, opcion]
-            case "k":
+            case "o":
                 return 3
 
     # Modificador de Atributos de Alumno / Herramienta para Agregar Alumnos (ID: 5, ID: 6)
@@ -347,7 +254,7 @@ def menuActual(menu, persistente=None):
             if len(listaDeAlumnos) != 0:
                 print("¿Cual alumno desea ver?")
                 for i in range(len(listaDeAlumnos)):
-                    print (f"{i+1}. {listaDeAlumnos[i+1]['apellido']}, {listaDeAlumnos[i+1]['nombre']}")
+                    print (f"{i+1}. {listaDeAlumnos[i].dato('apellido')}, {listaDeAlumnos[i].dato('nombre')}")
                     opcionesAlumnos.append(str(i+1))
             else:
                 print("No hay alumnos inscriptos en esta lista.")
@@ -359,20 +266,29 @@ def menuActual(menu, persistente=None):
 
         # Interfaz del Visualizador de Alumno
         case 2:
-            print(f"Alumno {modo} - {listaDeAlumnos[modo]['apellido']}, {listaDeAlumnos[modo]['nombre']}")
+            print(f"Alumno {modo} - {listaDeAlumnos[modo-1].dato('apellido')}, {listaDeAlumnos[modo-1].dato('nombre')}")
             print()
             print("Información General")
-            print(f"DNI: {listaDeAlumnos[modo]['dni']}")
-            print(f"Fecha de Nacimiento: {listaDeAlumnos[modo]['fdn']}")
-            print(f"Grado/Año: {listaDeAlumnos[modo]['grado']}")
-            print(f"Burbuja: {listaDeAlumnos[modo]['burbuja']}")
+            print(f"Domicilio: {listaDeAlumnos[modo-1].dato('domicilio')}")
+            print(f"DNI: {listaDeAlumnos[modo-1].dato('dni')}")
+            print(f"Fecha de Nacimiento: {listaDeAlumnos[modo-1].dato('fdn')}")
+            print(f"Grado/Año: {listaDeAlumnos[modo-1].dato('grado')}")
+            if len(listaDeAlumnos[modo-1].dato('division')) != 0 :
+                print(f"División: {listaDeAlumnos[modo-1].dato('division')}")
             print()
             print("Información del Alumno")
-            print(f"Notas: {listaDeAlumnos[modo]['notas']}")
+            if len(listaDeAlumnos[modo-1].dato('notas')) == 0:
+                print("Este alumno no tiene notas por el momento.")
+            else:
+                print(f"Notas: {listaDeAlumnos[modo-1].dato('notas')}")
+                Acumulador=0
+                for i in listaDeAlumnos[modo-1].dato('notas'):
+                    Acumulador+=i
+                print(f"Promedio: {Acumulador / len(listaDeAlumnos[modo-1].dato('notas'))}")
 
-            print(f"Tutor: {listaDeAlumnos[modo]['tutor']}")
-            print(f"Faltas: {listaDeAlumnos[modo]['faltas']}")
-            print(f"Amonestaciones: {listaDeAlumnos[modo]['amonestaciones']}")
+            print(f"Tutor: {listaDeAlumnos[modo-1].dato('tutor')}")
+            print(f"Faltas: {listaDeAlumnos[modo-1].dato('faltas')}")
+            print(f"Amonestaciones: {listaDeAlumnos[modo-1].dato('amonestaciones')}")
             print()
         
             print("a. Volver")
@@ -384,7 +300,7 @@ def menuActual(menu, persistente=None):
             if len(listaDeAlumnos) != 0:
                 print("¿Cual alumno desea modificar?")
                 for i in range(len(listaDeAlumnos)):
-                    print (f"{i+1}. {listaDeAlumnos[i+1]['apellido']}, {listaDeAlumnos[i+1]['nombre']}")
+                    print (f"{i+1}. {listaDeAlumnos[i].dato('apellido')}, {listaDeAlumnos[i].dato('nombre')}")
                     opcionesAlumnos.append(str(i+1))
             else:
                 print("No hay alumnos inscriptos en esta lista.")
@@ -396,21 +312,25 @@ def menuActual(menu, persistente=None):
         
         # Selector de Atributos a Modificar del Alumno
         case 4:
-            print(f"¿Que atributo de {listaDeAlumnos[modo]['apellido']}, {listaDeAlumnos[modo]['nombre']} quiere cambiar?")
+            print(f"¿Que atributo de {listaDeAlumnos[modo-1].dato('apellido')}, {listaDeAlumnos[modo-1].dato('nombre')} quiere cambiar?")
 
             print("a. Apellido")
             print("b. Nombre")
             print("c. DNI")
             print("d. Fecha de nacimiento")
             print("e. Grado")
-            print("f. Burbuja")
-            print("g. Notas")
-            print("h. Tutor")
-            print("i. Faltas")
-            print("j. Amonestaciones")
+            print("f. División")
+            print("g. Tutor")
+            print("h. Domicilio")
+            print("i. Agregar nota")
+            print("j. Remover nota")
+            print("k. Agregar faltas")
+            print("l. Remover faltas")
+            print("m. Agregar amonestaciones")
+            print("n. Remover amonestaciones")
             print()
-            print("k. Volver")
-            return ("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k")
+            print("o. Volver")
+            return ("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o")
         
         # Herramienta para Modificar atributos del alumno
         case 5:
@@ -421,31 +341,90 @@ def menuActual(menu, persistente=None):
                 'c': 'dni', 
                 'd': 'fdn', 
                 'e': 'grado', 
-                'f': 'burbuja', 
-                'g': 'notas',
-                'h': 'tutor',
-                'i': 'faltas',
-                'j': 'amonestaciones'}
+                'f': 'division', 
+                'g': 'tutor',
+                'h': 'domicilio',
+                'i': 'agregarNota',
+                'j': 'removerNota',
+                'k': 'agregarFalta',
+                'l': 'removerFalta',
+                "m": 'agregarAmonestacion',
+                'n': 'removerAmonestacion'}
 
             modificar=opcionesModif[modo]
 
-            vacio=None
+            Vacio=False
             
-            nuevo=input(f"Nuevo atributo '{modificar}': ")
-            nuevo=nuevo.upper()
-            nuevo=nuevo.lstrip()
-            nuevo=nuevo.rstrip()
+            match modificar:
+                case "agregarFalta" | "agregarAmonestacion":
+                    nuevo=input(f"Agregar numero de '{modificar}': ")
+                case "removerFalta" | "removerAmonestacion":
+                    nuevo=input(f"Remover numero de '{modificar}': ")
+                case "agregarNota":
+                    nuevo=input(f"Agregar '{modificar}' (1-10): ")
+                case "removerNota":
+                    Notas=listaDeAlumnos[valorPersistente-1].dato("notas")
+                    if len(Notas) == 0:
+                        print("Este alumno no tiene notas aún.")
+                        nuevo=""
+                    else:
+                        print(f"¿Cual nota quieres remover de {listaDeAlumnos[valorPersistente-1].dato('apellido')}, {listaDeAlumnos[valorPersistente-1].dato('nombre')}?")
+                        for i in range(0, len(Notas)):
+                            print(f"{i+1}. {Notas[i]}")
+                        nuevo=input(f"Remover '{modificar}': ")
+                        if nuevo == 0:
+                            nuevo=""
+                case default:
+                    nuevo=input(f"Nuevo atributo '{modificar}': ")
 
-            if modificar == 'notas':
-                    nuevo=list(nuevo)
-
-            for caracter in nuevo:
-                if caracter != " ":
-                    listaDeAlumnos[valorPersistente][modificar]=nuevo
-                    vacio=False
-                    break
+            
+            nuevo=nuevo.lstrip().rstrip()
+            
+            if len(nuevo) != 0:
+                match modificar:
+                    case "agregarNota" | "removerNota":
+                        try:
+                            nuevo=int(nuevo.lstrip().rstrip())
+                            if modificar == "agregarNota":
+                                listaDeAlumnos[valorPersistente-1].agregar("notas",nuevo)
+                            elif modificar == "removerNota":
+                                if nuevo >= 1:
+                                    listaDeAlumnos[valorPersistente-1].remover("notas",nuevo-1)
+                                else:
+                                    Vacio=True
+                        except ValueError:
+                            Vacio=True
+                    case "agregarFalta":
+                        try:
+                            nuevo=int(nuevo.lstrip().rstrip())
+                            listaDeAlumnos[valorPersistente-1].agregar("faltas",nuevo)
+                        except ValueError:
+                            Vacio=True
+                    case "removerFalta":
+                        try:
+                            nuevo=int(nuevo.lstrip().rstrip())
+                            listaDeAlumnos[valorPersistente-1].remover("faltas",nuevo)
+                        except ValueError:
+                            Vacio=True
+                    case "agregarAmonestacion":
+                        try:
+                            nuevo=int(nuevo.lstrip().rstrip())
+                            listaDeAlumnos[valorPersistente-1].agregar("amonestaciones",nuevo)
+                        except ValueError:
+                            Vacio=True
+                    case "removerAmonestacion":
+                        try:
+                            nuevo=int(nuevo.lstrip().rstrip())
+                            listaDeAlumnos[valorPersistente-1].remover("amonestaciones",nuevo)
+                        except ValueError:
+                            Vacio=True
+                    case default:
+                        nuevo=nuevo.lstrip().rstrip().upper()
+                        listaDeAlumnos[valorPersistente-1].reemplazar(modificar,nuevo)
+            else:
+                Vacio=True
         
-            if vacio == False:
+            if Vacio == False:
                 print("Atributo exitosamente cambiado.")
             else:
                 print("Operación cancelada.")
@@ -463,44 +442,40 @@ def menuActual(menu, persistente=None):
                 2: 'dni', 
                 3: 'fdn', 
                 4: 'grado', 
-                5: 'burbuja', 
-                6: 'notas',
-                7: 'tutor',
-                8: 'faltas',
-                9: 'amonestaciones'}
+                5: 'division',
+                6: 'tutor',
+                }
             
             listaParaPoner=[]
             
             for i in range(len(opcionesModif)):
-                Valor=input(f"Inserte atributo '{opcionesModif[i]}': ")
+                if opcionesModif[i] == "apellido" or opcionesModif[i] == "nombre":
+                    Valor=input(f"Inserte atributo '{opcionesModif[i]}' (obligatorio): ")
+                else:
+                    Valor=input(f"Inserte atributo '{opcionesModif[i]}' (opcional): ")
 
-                Valor=Valor.lstrip()
-                Valor=Valor.rstrip()
-                Valor=Valor.upper()
+                Valor=Valor.lstrip().rstrip().upper()
 
-                if len(Valor) == 0:
+                if len(Valor) == 0 and opcionesModif[i] != "division" and opcionesModif[i] != "grado" and opcionesModif[i] != "dni" and opcionesModif[i] != "fdn" and opcionesModif[i] != "tutor":
                     Vacio=True
                     break
                 else:
-                    if opcionesModif[i] == 'notas':
-                        Valor=list(Valor)
                     listaParaPoner.append(Valor)
             
             if Vacio == True:
                 print("Operación cancelada.")
             else:
-                listaDeAlumnos[len(listaDeAlumnos)+1]={
-                    f"{opcionesModif[0]}": f"{listaParaPoner[0]}",
-                    f"{opcionesModif[1]}": f"{listaParaPoner[1]}",
-                    f"{opcionesModif[2]}": f"{listaParaPoner[2]}",
-                    f"{opcionesModif[3]}": f"{listaParaPoner[3]}",
-                    f"{opcionesModif[4]}": f"{listaParaPoner[4]}",
-                    f"{opcionesModif[5]}": f"{listaParaPoner[5]}",
-                    f"{opcionesModif[6]}": f"{listaParaPoner[6]}",
-                    f"{opcionesModif[7]}": f"{listaParaPoner[7]}",
-                    f"{opcionesModif[8]}": f"{listaParaPoner[8]}",
-                    f"{opcionesModif[9]}": f"{listaParaPoner[9]}"
-                    }
+                listaDeAlumnos.append(
+                    Alumno(
+                        apellido=listaParaPoner[0],
+                        nombre=listaParaPoner[1],
+                        dni=listaParaPoner[2],
+                        fdn=listaParaPoner[3],
+                        grado=listaParaPoner[4],
+                        division=listaParaPoner[5],
+                        tutor=listaParaPoner[6]                      
+                    )
+                )
                 
                 print("Se ha agregado al alumno con exito.")
             print("a. Volver")
@@ -512,7 +487,7 @@ def menuActual(menu, persistente=None):
             if len(listaDeAlumnos) != 0:
                 print("¿A cual alumno quiere expulsar?")
                 for i in range(len(listaDeAlumnos)):
-                    print (f"{i+1}. {listaDeAlumnos[i+1]['apellido']}, {listaDeAlumnos[i+1]['nombre']}")
+                    print (f"{i+1}. {listaDeAlumnos[i].dato('apellido')}, {listaDeAlumnos[i].dato('nombre')}")
                     opcionesAlumnos.append(str(i+1))
             else:
                 print("No hay alumnos inscriptos en esta lista.")
@@ -527,20 +502,14 @@ def menuActual(menu, persistente=None):
             valorPersistente=modo
             Respaldo=listaDeAlumnos
 
-            Confirmación=input(f"¿Está seguro que quiere expulsar al alumno/a {listaDeAlumnos[modo]['apellido']}, {listaDeAlumnos[modo]['nombre']}? (s/N) ")
-            Confirmación=Confirmación.lstrip()
-            Confirmación=Confirmación.rstrip()
+            Confirmación=input(f"¿Está seguro que quiere expulsar al alumno/a {listaDeAlumnos[modo-1].dato('apellido')}, {listaDeAlumnos[modo-1].dato('nombre')}? (s/N) ")
+            Confirmación=Confirmación.lstrip().rstrip()
             
             if Confirmación == "s":
                 Confirmación="S"
 
             if Confirmación == "S" and len(Confirmación) == 1:
-
-                for i in range(modo,len(listaDeAlumnos)):
-                    listaDeAlumnos[i]=listaDeAlumnos[i+1]
-            
-                del listaDeAlumnos[len(listaDeAlumnos)]
-
+                listaDeAlumnos.remove(listaDeAlumnos[modo-1])
                 print("Se ha expulsado al alumno con exito.")
 
             else:
@@ -576,7 +545,7 @@ def persistir(variable):
     else:
         return variable
 
-listaDeAlumnos=ordenarDiccionario(listaDeAlumnos)
+listaDeAlumnos=ordenarLista(listaDeAlumnos)
 
 print("Bienvenido a la Lista Escolar!")
 pagina=0
@@ -607,6 +576,6 @@ try:
             opciones=menuActual(pagina,persistenteVariable)
 
         if pagina == 0:
-            listaDeAlumnos=ordenarDiccionario(listaDeAlumnos)
+            listaDeAlumnos=ordenarLista(listaDeAlumnos)
 except KeyboardInterrupt:
     cmds("exit")
