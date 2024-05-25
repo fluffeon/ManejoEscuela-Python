@@ -444,6 +444,7 @@ def menuActual(menu, persistente=None):
                 4: 'grado', 
                 5: 'division',
                 6: 'tutor',
+                7: 'domicilio'
                 }
             
             listaParaPoner=[]
@@ -473,7 +474,8 @@ def menuActual(menu, persistente=None):
                         fdn=listaParaPoner[3],
                         grado=listaParaPoner[4],
                         division=listaParaPoner[5],
-                        tutor=listaParaPoner[6]                      
+                        tutor=listaParaPoner[6],
+                        domicilio=listaParaPoner[7]                    
                     )
                 )
                 
