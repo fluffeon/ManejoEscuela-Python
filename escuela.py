@@ -125,7 +125,7 @@ listaDeAlumnos=[
     amonestaciones=0), 
     
     Alumno(
-    apellido="caca",
+    apellido="granadina",
     nombre="juan perez", 
     fdn="26/02/2006", 
     grado="5º", 
@@ -158,9 +158,6 @@ listaDeAlumnos=[
     amonestaciones=0)
 
     ]
-
-for i in range(len(listaDeAlumnos)):
-	print(f"{listaDeAlumnos[i].dato('apellido')}, {listaDeAlumnos[i].dato('nombre')}")
 
 def ordenarLista(lista):
     listaOrden = sorted(lista, key=lambda x: x.apellido, reverse=False)
